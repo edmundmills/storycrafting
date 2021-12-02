@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}
+Stories
+{% endblock %}
+
+{% block content %}
+<h1>Stories</h1>
+<p>
+    <a href="{% url 'stories:new' %}" class="btn btn-primary">New Story</a>
+</p>
+
+{% if stories %}
+<h2>Your Stories</h2>
+<ul>
+    {% for story in stories %}
+    <li><a href="{% url 'stories:write' story.id %}">{{ story.title }}</a></li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>No stories.</p>
+{% endif %}
+{% endblock %}
