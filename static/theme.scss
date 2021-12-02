@@ -1,0 +1,15 @@
+$primary: #4D194D;
+$dark: #272640;
+$secondary: #006466;
+$light: #F3F3F7;
+
+$card-bg: $light;
+$card-border-color: $secondary;
+
+$enable-rounded: false;
+
+@import './bootstrap/scss/bootstrap';
+
+h1 {
+    color: $dark;
+}
