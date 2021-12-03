@@ -2,8 +2,8 @@ import openai
 
 class Prompter:
     @classmethod
-    def prompt(cls, prompt, engine='davinci', temperature=0.5,
-               max_tokens=150, frequency_penalty=1.0):
+    def prompt(cls, prompt, engine='davinci', temperature=0.3,
+               max_tokens=150, frequency_penalty=1.25):
         response = openai.Completion.create(
             engine=engine,
             prompt = prompt,

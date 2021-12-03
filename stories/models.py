@@ -51,7 +51,11 @@ class Proposal(models.Model):
         ordering = ['id']
 
     def __str__(self):
-        return self.proposal_text
+        if not self.step.prompt:
+            text ='Once upon a time' + self.proposal_text 
+        else:
+            text = self.proposal_text
+        return text
 
     def story_url(self):
         return self.step.story_url()
@@ -62,10 +66,10 @@ class Proposal(models.Model):
         story_text = self.step.prompt
         prompt = ""
         if len(thoughts) == 0 and not story_text:
-            prompt += f"Write a story named #{story_title}:\n"
+            prompt += f"#{story_title}\n"
         elif len(thoughts) > 0:
             prompt = "Write a story using this information:\n"
-            prompt += f"The story has the title {story_title}"
+            prompt += f"The story is titled {story_title}"
             for thought in thoughts:
                 prompt += f"- {thought}\n"
             prompt += '\n'

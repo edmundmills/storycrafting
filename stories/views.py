@@ -44,7 +44,7 @@ class WriteView(generic.edit.UpdateView):
 def prompt(request, pk):
     proposal = get_object_or_404(Proposal, id=pk)
     formatted_prompt = proposal.formatted_prompt()
-    response = Prompter.prompt(formatted_prompt)
+    response = 'test' #Prompter.prompt(formatted_prompt)
     proposal.proposal_text = response
     proposal.save()
     return HttpResponseRedirect(proposal.story_url())
@@ -54,9 +54,7 @@ def accept_proposal(request, pk):
     step = proposal.step
     proposal.accepted = True
     proposal.save
-    accepted_text = proposal.proposal_text
-    if not step.prompt:
-        accepted_text = 'Once upon a time' + accepted_text
+    accepted_text = str(proposal)
     step = Step.objects.create(story_id=step.story_id, prompt=accepted_text)
     Proposal.objects.create(step_id=step.id)
     return HttpResponseRedirect(step.story_url())
