@@ -1,0 +1,11 @@
+{% if not steps_list %}
+The story has yet to begin...
+{% else %}
+<ul class="list-group list-group-flush">
+    {% for step in steps_list %}
+    <li class="list-group-item">
+        {{step.prompt_text}}
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}

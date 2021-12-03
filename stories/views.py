@@ -2,10 +2,9 @@ from django.http import HttpResponse
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
-# from django.urls.base import reverse_lazy
 from django.views import generic
 
-from .models import Story
+from .models import Story, Step, Proposal, Thought
 
 class IndexView(generic.ListView):
     template_name = 'stories/index.html'
@@ -22,6 +21,9 @@ class NewView(generic.edit.CreateView):
 class WriteView(generic.edit.UpdateView):
     template_name = 'stories/write.html'
     model = Story
+    extra_context = {
+        'step_list': Step.objects.all(),
+        'proposal': Proposal.objects.all().order_by('-id'),
+        'thought_list': Thought.objects.all(),
+    }
     fields = []
-
-
