@@ -3,9 +3,18 @@ The story has yet to begin...
 {% else %}
 <div class="h-100 d-flex flex-column-reverse overflow-auto p-3">
     {% for step in steps_list %}
-    <p class="story-paragraph">
-        {{step.prompt}}
-    </p>
+    <div>
+        {% if show_thoughts %}
+        <ul class='collapse multi-collapse show'>
+            {% for thought in step.accepted_proposal.thoughts.all %}
+            <li class="story-thought">{{thought}}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        <p class="story-paragraph">
+            {{step.prompt}}
+        </p>
+    </div>
     {% endfor %}
 </div>
 {% endif %}

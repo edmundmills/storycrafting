@@ -41,10 +41,21 @@ class WriteView(generic.edit.UpdateView):
         })
         return context
 
+class ReadView(generic.DetailView):
+    template_name = 'stories/read.html'
+    model = Story
+
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context.update({
+            'steps_list': self.object.steps.all().order_by('-id'),
+        })
+        return context
+
 def prompt(request, pk):
     proposal = get_object_or_404(Proposal, id=pk)
     formatted_prompt = proposal.formatted_prompt()
-    response = 'test' #Prompter.prompt(formatted_prompt)
+    response = Prompter.prompt(formatted_prompt)
     proposal.proposal_text = response
     proposal.save()
     return HttpResponseRedirect(proposal.story_url())
@@ -55,9 +66,16 @@ def accept_proposal(request, pk):
     proposal.accepted = True
     proposal.save
     accepted_text = str(proposal)
-    step = Step.objects.create(story_id=step.story_id, prompt=accepted_text)
+    step = Step.objects.create(story_id=step.story_id, prompt=accepted_text, accepted_proposal_id=proposal.id)
     Proposal.objects.create(step_id=step.id)
     return HttpResponseRedirect(step.story_url())
+
+def edit_proposal(request, pk):
+    proposal = get_object_or_404(Proposal, id=pk)
+    text = request.POST['proposal_text']
+    proposal.proposal_text = text
+    proposal.save()
+    return HttpResponseRedirect(proposal.story_url())
 
 def reject_proposal(request, pk):
     proposal = get_object_or_404(Proposal, id=pk)
@@ -70,9 +88,10 @@ def reject_proposal(request, pk):
 
 def add_thought(request, pk):
     proposal = get_object_or_404(Proposal, id=pk)
-    print(request.POST)
     text = request.POST['thought_text']
-    Thought.objects.create(proposal_id=proposal.id, thought_text=text)
+    thoughts = text.split('\n')
+    for thought_string in thoughts:
+        Thought.objects.create(proposal_id=proposal.id, thought_text=thought_string)
     story = proposal.step.story
     return HttpResponseRedirect(story.get_absolute_url())
 

@@ -2,6 +2,7 @@ from django.db import models
 from django.urls import reverse
 
 
+
 class Story(models.Model):
     title = models.CharField(max_length=200)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -28,6 +29,7 @@ class Story(models.Model):
 class Step(models.Model):
     story = models.ForeignKey(Story, related_name='steps', on_delete=models.CASCADE)
     prompt = models.CharField(max_length=1000, default='')
+    accepted_proposal = models.OneToOneField('Proposal', null=True, on_delete=models.SET_NULL, related_name='next_step')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -51,18 +53,14 @@ class Proposal(models.Model):
         ordering = ['id']
 
     def __str__(self):
-        if not self.step.prompt:
-            text ='Once upon a time' + self.proposal_text 
-        else:
-            text = self.proposal_text
-        return text
+        return self.proposal_text
 
     def story_url(self):
         return self.step.story_url()
 
     def formatted_prompt(self):
         thoughts = self.thoughts.all()
-        story_title = self.step.story.title 
+        story_title = self.step.story.title
         story_text = self.step.prompt
         prompt = ""
         if len(thoughts) == 0 and not story_text:
@@ -73,7 +71,7 @@ class Proposal(models.Model):
             for thought in thoughts:
                 prompt += f"- {thought}\n"
             prompt += '\n'
-        prompt += story_text or 'Once upon a time'
+        prompt += story_text or 'Response:'
         return prompt
 
 

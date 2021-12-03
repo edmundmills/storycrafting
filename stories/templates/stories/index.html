@@ -14,7 +14,7 @@ Stories
 <h2>Your Stories</h2>
 <ul>
     {% for story in stories %}
-    <li><a href="{% url 'stories:write' story.id %}">{{ story.title }}</a></li>
+    <li><a href="{% url 'stories:read' story.id %}">{{ story.title }}</a></li>
     {% endfor %}
 </ul>
 {% else %}

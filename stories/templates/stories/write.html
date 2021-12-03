@@ -9,7 +9,7 @@ Write - {{story.title}}
     <div class="col d-flex flex-column h-100">
         <h2>{{story.title}}</h2>
         <div class='flex-grow-1 h-100 overflow-auto border-top'>
-            {% include 'stories/steps/_list.html' with steps_list=steps_list %}
+            {% include 'stories/steps/_list.html' with steps_list=steps_list show_thoughts=False%}
         </div>
         {% include 'stories/proposals/_detail.html' with proposal=proposal %}
     </div>
