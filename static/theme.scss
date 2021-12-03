@@ -5,11 +5,12 @@ $light: #F3F3F7;
 
 $card-bg: $light;
 $card-border-color: $secondary;
-
-$enable-rounded: false;
+$border-radius:   0rem;
+$btn-border-radius: 3rem;
 
 @import './bootstrap/scss/bootstrap';
 
 h1 {
     color: $dark;
 }
+
