@@ -1,11 +1,11 @@
 {% if not steps_list %}
 The story has yet to begin...
 {% else %}
-<ul class="list-group list-group-flush">
+<div class="h-100 d-flex flex-column-reverse overflow-auto p-3">
     {% for step in steps_list %}
-    <li class="list-group-item">
-        {{step.prompt_text}}
-    </li>
+    <p class="story-paragraph">
+        {{step.prompt}}
+    </p>
     {% endfor %}
-</ul>
+</div>
 {% endif %}

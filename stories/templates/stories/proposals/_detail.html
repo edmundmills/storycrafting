@@ -1,7 +1,16 @@
-<div class='border border-secondary p-2'>
-    {{proposal.proposal_text}}
+<div class='card card-body'>
+    {% if proposal.proposal_text %}
+    <p class="story-paragraph">
+        {{proposal.proposal_text}}
+    </p>
     <div class='d-flex justify-content-center'>
-        <a class='btn btn-primary mx-1'>Accept</a>
-        <a class='btn btn-primary mx-1'>New Proposal</a>
+        <a href="{% url 'stories:accept_proposal' proposal.id %}" class='btn btn-primary mx-1'>Accept</a>
+        <a href="{% url 'stories:reject_proposal' proposal.id %}" class='btn btn-primary mx-1'>New Proposal</a>
     </div>
+    {% else %}
+    <p>Add thoughts to condition the proposal.</p>
+    <div class='d-flex justify-content-center'>
+        <a href="{% url 'stories:prompt' proposal.id %}" class='btn btn-primary'>Generate Proposal</a>
+    </div>
+    {% endif %}
 </div>

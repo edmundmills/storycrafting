@@ -14,9 +14,11 @@
 </head>
 
 <body>
-    {% include 'layouts/_navbar.html' %}
-    <div id="content" class='p-4'>
-        {% block content %}{% endblock %}
+    <div style="height: 100vh;" class="d-flex flex-column">
+        {% include 'layouts/_navbar.html' %}
+        <div id="content" class='h-100 overflow-auto p-4 flex-grow-1'>
+            {% block content %}{% endblock %}
+        </div>
     </div>
 </body>
 

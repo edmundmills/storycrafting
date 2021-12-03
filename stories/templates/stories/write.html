@@ -5,21 +5,15 @@ Write - {{story.title}}
 {% endblock %}
 
 {% block content %}
-<div class='row'>
-    <div class="col">
+<div class='row h-100'>
+    <div class="col d-flex flex-column h-100">
         <h2>{{story.title}}</h2>
-        <div class='mb-2'>
+        <div class='flex-grow-1 h-100 overflow-auto border-top'>
             {% include 'stories/steps/_list.html' with steps_list=steps_list %}
         </div>
-        {% if proposal %}
         {% include 'stories/proposals/_detail.html' with proposal=proposal %}
-        {% else %}
-        <div>
-            <a class='btn btn-primary'>Begin</a>
-        </div>
-        {% endif %}
     </div>
-    <div class="col">
+    <div class="col h-100">
         {% include 'stories/thoughts/_editor.html' with thought_list=thought_list %}
     </div>
 </div>
