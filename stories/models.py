@@ -70,24 +70,6 @@ class Proposal(models.Model):
     def thoughts_text(self):
         return "".join(f"{thought}\n" for thought in self.thoughts.all())
 
-    def formatted_prompt(self):
-        thoughts = self.thoughts.all()
-        facts = self.facts.all()
-        story_title = self.step.story.title
-        story_text = self.step.prompt
-        prompt = ""
-        if len(thoughts) == 0 and len(facts) == 0 and not story_text:
-            prompt += f"Write a story below.\n"
-            prompt += f"{story_title}, a story."
-        elif len(thoughts) + len(facts) > 0:
-            prompt = "Write a story using this information:\n"
-            prompt += f"- The story is titled {story_title}\n"
-            prompt += "".join(f"- {fact}\n" for fact in self.facts.all())
-            prompt += "".join(f"- {thought}\n" for thought in self.thoughts.all())
-            prompt += story_text or 'Response:'
-        print(prompt)
-        return prompt
-
 
 class Thought(models.Model):
     proposal = models.ForeignKey(Proposal, related_name='thoughts', on_delete=models.CASCADE)

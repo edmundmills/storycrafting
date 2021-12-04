@@ -77,8 +77,8 @@ def update_proposal(request, pk):
             if fact_string:
                 Fact.objects.create(proposal_id=proposal.id, fact_text=fact_string)
 
-        formatted_prompt = proposal.formatted_prompt()
-        response = 'test' #Prompter.prompt(formatted_prompt)
+        prompt_parms = Prompter.generate_proposal_prompt(proposal)
+        response = 'test' #Prompter.prompt(prompt_parms)
         proposal.proposal_text = response
     elif 'accept' in request.POST:
         proposal.proposal_text = proposal_text
