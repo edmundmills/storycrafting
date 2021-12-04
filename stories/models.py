@@ -30,6 +30,8 @@ class Step(models.Model):
     story = models.ForeignKey(Story, related_name='steps', on_delete=models.CASCADE)
     prompt = models.CharField(max_length=1000, default='')
     accepted_proposal = models.OneToOneField('Proposal', null=True, on_delete=models.SET_NULL, related_name='next_step')
+    generated_context = models.CharField(max_length=1000, default='')
+    accepted_context = models.CharField(max_length=1000, default='')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -69,6 +71,25 @@ class Proposal(models.Model):
     @property
     def thoughts_text(self):
         return "".join(f"{thought}\n" for thought in self.thoughts.all())
+
+    def update_facts(self, facts_text):
+        self.facts.all().delete()
+        facts = facts_text.split('\n')
+        for fact_string in facts:
+            fact_string = ' '.join(fact_string.split())
+            if fact_string:
+                if fact_string[0:2] == '- ':
+                    fact_string = fact_string[2:]
+                Fact.objects.create(proposal_id=self.id, fact_text=fact_string)
+
+    def update_thoughts(self, thoughts_text):
+        self.thoughts.all().delete()
+        thoughts = thoughts_text.split('\n')
+        for thought_string in thoughts:
+            thought_string = ' '.join(thought_string.split())
+            if thought_string:
+                Thought.objects.create(proposal_id=self.id, thought_text=thought_string)
+
 
 
 class Thought(models.Model):

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}
+Write - {{story.title}}
+{% endblock %}
+
+{% block content %}
+<form method="post" class="h-100">
+    {% csrf_token %}
+    <div class='row h-100'>
+        <div class="col d-flex flex-column h-100">
+            <h1 class="story-title">{{story.title}}</h1>
+            <div class="story-paragraph border-top p-3">
+                {{step.prompt}}
+            </div>
+        </div>
+        <div class="col h-100">
+            <div class="card card-body overflow-auto" style="max-height: 100%;">
+                <h3>Previous Context</h3>
+                <ul>
+                    {% for fact in previous_fact_list %}
+                    <li>
+                        {{fact}}
+                    </li>
+                    {% endfor %}
+                </ul>
+                <h3>Updated Context</h3>
+                <textarea style="height: 220px;" type="textarea" name="accepted_context"
+                    class="form-control">{{ step.generated_context }}</textarea>
+                <div class='text-center mt-3'>
+                    <input type="submit" name="accept" value="Accept Updated Context"
+                        class='btn btn-sm btn-primary mx-1'>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</form>
+{% endblock %}

@@ -16,6 +16,10 @@ document.addEventListener("DOMContentLoaded", function (event) {
     if (promptButton !== null) {
         promptButton.addEventListener('click', prompt_loading)
     };
+    acceptButton = document.getElementById('accept-proposal-button');
+    if (acceptButton !== null) {
+        acceptButton.addEventListener('click', prompt_loading)
+    };
 });
 
 

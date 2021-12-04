@@ -8,5 +8,6 @@ urlpatterns = [
     path('stories/<int:pk>/write/', views.WriteView.as_view(), name='write'),
     path('stories/<int:pk>/', views.ReadView.as_view(), name='read'),
     path('proposals/<int:pk>/update/', views.update_proposal, name='update_proposal'),
+    path('steps/<int:pk>/update_context', views.UpdateContextView.as_view(), name='update_context'),
     path('', views.IndexView.as_view(), name='index'),
 ]

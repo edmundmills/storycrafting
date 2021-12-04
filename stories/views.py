@@ -61,35 +61,25 @@ def update_proposal(request, pk):
         proposal_text = request.POST['proposal_text']
     thoughts_text = request.POST['thoughts_text']
     facts_text = request.POST['facts_text']
-    print(request.POST)
     if 'generate_proposal' in request.POST:
-        # update thoughts and facts
-        proposal.thoughts.all().delete()
-        thoughts = thoughts_text.split('\n')
-        for thought_string in thoughts:
-            thought_string = ' '.join(thought_string.split())
-            if thought_string:
-                Thought.objects.create(proposal_id=proposal.id, thought_text=thought_string)
-        proposal.facts.all().delete()
-        facts = facts_text.split('\n')
-        for fact_string in facts:
-            fact_string = ' '.join(fact_string.split())
-            if fact_string:
-                Fact.objects.create(proposal_id=proposal.id, fact_text=fact_string)
+        proposal.update_thoughts(thoughts_text)
+        proposal.update_facts(facts_text)
 
-        prompt_parms = Prompter.generate_proposal_prompt(proposal)
-        response = 'test' #Prompter.prompt(prompt_parms)
+        prompt_params = Prompter.generate_proposal_prompt(proposal)
+        response = Prompter.prompt(prompt_params)
+        response = '.'.join(response.split('.')[:-1]) + '.'
         proposal.proposal_text = response
     elif 'accept' in request.POST:
         proposal.proposal_text = proposal_text
         proposal.accepted = True
+        proposal.save()
         step = Step.objects.create(story_id=step.story_id, prompt=proposal_text, accepted_proposal_id=proposal.id)
         new_proposal = Proposal.objects.create(step_id=step.id)
-        # copy facts
-        for fact in proposal.facts.all():
-            fact.id = None
-            fact.proposal_id = new_proposal.id
-            fact.save()
+        prompt_params = Prompter.update_context_prompt(step)
+        response = Prompter.prompt(prompt_params)
+        step.generated_context = response
+        step.save()
+        return HttpResponseRedirect(reverse('stories:update_context', args=[step.id]))
     elif 'new_proposal' in request.POST:
         new_proposal = Proposal.objects.create(step_id=proposal.step_id)
         thoughts = thoughts_text.split('\n')
@@ -135,6 +125,26 @@ def update_proposal(request, pk):
 #         thought.proposal_id = new_proposal.id
 #         thought.save()
 #     return HttpResponseRedirect(new_proposal.story_url())
+class UpdateContextView(generic.edit.UpdateView):
+    template_name = 'stories/steps/update_context.html'
+    model = Step
+    fields = ['accepted_context']
 
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context.update({
+            'story': self.object.story,
+            'previous_fact_list': self.object.previous_proposal.facts.all(),
+        })
+        return context
 
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        accepted_context = self.get_form_kwargs()['data']['accepted_context']
+        proposal = self.object.proposals.all()[0]
+        proposal.update_facts(accepted_context)
+        return response
+
+    def get_success_url(self):
+        return self.object.story_url()
 
