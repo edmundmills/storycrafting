@@ -5,19 +5,22 @@ Stories
 {% endblock %}
 
 {% block content %}
-<h1>Stories</h1>
-<p>
-    <a href="{% url 'stories:new' %}" class="btn btn-primary">New Story</a>
-</p>
+<div class="container">
+    <div class="d-flex border-bottom mb-3">
+        <h1>Your Stories</h1>
+        <div class="mt-2 mx-3">
+            <a href="{% url 'stories:new' %}" class="btn btn-outline-primary">New Story</a>
+        </div>
+    </div>
 
-{% if stories %}
-<h2>Your Stories</h2>
-<ul>
-    {% for story in stories %}
-    <li><a href="{% url 'stories:read' story.id %}">{{ story.title }}</a></li>
-    {% endfor %}
-</ul>
-{% else %}
-<p>No stories.</p>
-{% endif %}
+    {% if stories %}
+    <ul>
+        {% for story in stories %}
+        <li><a href="{% url 'stories:read' story.id %}">{{ story.title }}</a></li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>No stories.</p>
+    {% endif %}
+</div>
 {% endblock %}
