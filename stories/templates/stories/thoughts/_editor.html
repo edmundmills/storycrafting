@@ -14,7 +14,11 @@
                     placeholder="Use line-breaks to add multiple thoughts"></textarea>
             </fieldset>
             <div class="mt-3 text-center">
+                {% if proposal.proposal_text %}
+                <input type="submit" value="Add Thought" class="btn btn-primary disabled prompt-loading-hidden">
+                {% else %}
                 <input type="submit" value="Add Thought" class="btn btn-primary prompt-loading-hidden">
+                {% endif %}
                 <input type="submit" value="Add Thought" class="btn btn-primary disabled prompt-loading">
             </div>
         </form>
