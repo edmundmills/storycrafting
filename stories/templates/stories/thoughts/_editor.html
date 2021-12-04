@@ -1,26 +1,20 @@
 <div class='card card-body h-100 d-flex flex-column'>
-    <h3>Thoughts</h3>
-    <div class="flex-grow-1 h-100 overflow-auto">
-        {% for thought in thought_list %}
-        {% include 'stories/thoughts/_detail.html' with thought=thought %}
-        {% endfor %}
+    <div class="h-50 d-flex flex-column pb-3">
+        <div>
+            <h4>Long-Term Context</h4>
+        </div>
+        <p><i>What are important things to keep in mind while telling the story?</i></p>
+        <textarea {% if not editable %}disabled{% endif %} type="textarea" name="facts_text"
+            class="form-control flex-grow-1"
+            placeholder="Use line-breaks to add multiple pieces of context">{{proposal.facts_text}}</textarea>
     </div>
-    <div>
-        <form method="post" action="{% url 'stories:add_thought' proposal.id %}">
-            {% csrf_token %}
-            <fieldset>
-                {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
-                <textarea style="height: 100px;" type="textarea" name="thought_text" class="form-control"
-                    placeholder="Use line-breaks to add multiple thoughts"></textarea>
-            </fieldset>
-            <div class="mt-3 text-center">
-                {% if proposal.proposal_text %}
-                <input type="submit" value="Add Thought" class="btn btn-primary disabled prompt-loading-hidden">
-                {% else %}
-                <input type="submit" value="Add Thought" class="btn btn-primary prompt-loading-hidden">
-                {% endif %}
-                <input type="submit" value="Add Thought" class="btn btn-primary disabled prompt-loading">
-            </div>
-        </form>
+    <div class="h-50 d-flex flex-column">
+        <div>
+            <h4>Reasoning</h4>
+        </div>
+        <p><i>What should happen next and why?</i></p>
+        <textarea {% if not editable %}disabled{% endif %} type="textarea" name="thoughts_text"
+            class="form-control flex-grow-1"
+            placeholder="Use line-breaks to add multiple pieces of reasoning">{{proposal.thoughts_text}}</textarea>
     </div>
 </div>

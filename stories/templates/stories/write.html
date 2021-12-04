@@ -5,16 +5,20 @@ Write - {{story.title}}
 {% endblock %}
 
 {% block content %}
-<div class='row h-100'>
-    <div class="col d-flex flex-column h-100">
-        <h2>{{story.title}}</h2>
-        <div class='flex-grow-1 h-100 overflow-auto border-top'>
-            {% include 'stories/steps/_list.html' with steps_list=steps_list show_thoughts=False%}
+<form action="{% url 'stories:prompt' proposal.id%}" method="post" class="h-100">
+    {% csrf_token %}
+    <div class='row h-100'>
+        <div class="col d-flex flex-column h-100">
+            <h1 class="story-title">{{story.title}}</h1>
+            <div class='flex-grow-1 h-100 overflow-auto border-top'>
+                {% include 'stories/steps/_list.html' with steps_list=steps_list show_thoughts=False%}
+            </div>
+            {% include 'stories/proposals/_detail.html' with proposal=proposal %}
         </div>
-        {% include 'stories/proposals/_detail.html' with proposal=proposal %}
+        <div class="col h-100">
+            {% include 'stories/thoughts/_editor.html' with thought_list=thought_list editable=editable %}
+        </div>
     </div>
-    <div class="col h-100">
-        {% include 'stories/thoughts/_editor.html' with thought_list=thought_list %}
-    </div>
-</div>
+</form>
+{% include 'stories/proposals/_edit_modal.html' with proposal=proposal %}
 {% endblock %}

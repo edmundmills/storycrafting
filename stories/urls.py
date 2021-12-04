@@ -11,7 +11,5 @@ urlpatterns = [
     path('proposals/<int:pk>/accept_proposal/', views.accept_proposal, name='accept_proposal'),
     path('proposals/<int:pk>/edit_proposal/', views.edit_proposal, name='edit_proposal'),
     path('proposals/<int:pk>/reject_proposal/', views.reject_proposal, name='reject_proposal'),
-    path('proposals/<int:pk>/add_thought/', views.add_thought, name='add_thought'),
-    path('thoughts/<int:pk>/delete_thought/', views.delete_thought, name='delete_thought'),
     path('', views.IndexView.as_view(), name='index'),
 ]
