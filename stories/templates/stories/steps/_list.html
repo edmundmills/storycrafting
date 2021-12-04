@@ -6,6 +6,9 @@ The story has yet to begin...
     <div>
         {% if show_thoughts %}
         <ul class='collapse multi-collapse show'>
+            {% for fact in step.previous_proposal.facts.all %}
+            <li class="story-fact">{{fact}}</li>
+            {% endfor %}
             {% for thought in step.previous_proposal.thoughts.all %}
             <li class="story-thought">{{thought}}</li>
             {% endfor %}

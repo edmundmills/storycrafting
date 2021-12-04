@@ -96,35 +96,6 @@ def update_proposal(request, pk):
     proposal.save()
     return HttpResponseRedirect(proposal.story_url())
 
-# def accept_proposal(request, pk):
-#     proposal = get_object_or_404(Proposal, id=pk)
-#     step = proposal.step
-#     proposal.accepted = True
-#     proposal.save
-#     accepted_text = str(proposal)
-#     step = Step.objects.create(story_id=step.story_id, prompt=accepted_text, accepted_proposal_id=proposal.id)
-#     new_proposal = Proposal.objects.create(step_id=step.id)
-#     for fact in proposal.facts.all():
-#         fact.id = None
-#         fact.proposal_id = new_proposal.id
-#         fact.save()
-#     return HttpResponseRedirect(step.story_url())
-
-# def edit_proposal(request, pk):
-#     proposal = get_object_or_404(Proposal, id=pk)
-#     text = request.POST['proposal_text']
-#     proposal.proposal_text = text
-#     proposal.save()
-#     return HttpResponseRedirect(proposal.story_url())
-
-# def reject_proposal(request, pk):
-#     proposal = get_object_or_404(Proposal, id=pk)
-#     new_proposal = Proposal.objects.create(step_id=proposal.step_id)
-#     for thought in (*proposal.thoughts.all(), *proposal.facts.all()):
-#         thought.id = None
-#         thought.proposal_id = new_proposal.id
-#         thought.save()
-#     return HttpResponseRedirect(new_proposal.story_url())
 class UpdateContextView(generic.edit.UpdateView):
     template_name = 'stories/steps/update_context.html'
     model = Step
