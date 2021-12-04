@@ -40,7 +40,6 @@ class WriteView(generic.edit.UpdateView):
             'proposal': current_proposal,
             'thought_list': current_proposal.thoughts.all(),
             'fact_list': current_proposal.facts.all(),
-            'editable': not current_proposal.proposal_text,
         })
         return context
 
@@ -55,59 +54,87 @@ class ReadView(generic.DetailView):
         })
         return context
 
-def prompt(request, pk):
-    proposal = get_object_or_404(Proposal, id=pk)
-    proposal.thoughts.all().delete()
-    proposal.facts.all().delete()
-    
-    thoughts_text = request.POST['thoughts_text']
-    thoughts = thoughts_text.split('\n')
-    for thought_string in thoughts:
-        thought_string = ' '.join(thought_string.split())
-        if thought_string:
-            Thought.objects.create(proposal_id=proposal.id, thought_text=thought_string)
-    facts_text = request.POST['facts_text']
-    facts = facts_text.split('\n')
-    for fact_string in facts:
-        fact_string = ' '.join(fact_string.split())
-        if fact_string:
-            Fact.objects.create(proposal_id=proposal.id, fact_text=fact_string)
-
-    formatted_prompt = proposal.formatted_prompt()
-    response = Prompter.prompt(formatted_prompt)
-    proposal.proposal_text = response
-    proposal.save()
-    return HttpResponseRedirect(proposal.story_url())
-
-def accept_proposal(request, pk):
+def update_proposal(request, pk):
     proposal = get_object_or_404(Proposal, id=pk)
     step = proposal.step
-    proposal.accepted = True
-    proposal.save
-    accepted_text = str(proposal)
-    step = Step.objects.create(story_id=step.story_id, prompt=accepted_text, accepted_proposal_id=proposal.id)
-    new_proposal = Proposal.objects.create(step_id=step.id)
-    for fact in proposal.facts.all():
-        fact.id = None
-        fact.proposal_id = new_proposal.id
-        fact.save()
-    return HttpResponseRedirect(step.story_url())
+    if 'proposal_text' in request.POST:
+        proposal_text = request.POST['proposal_text']
+    thoughts_text = request.POST['thoughts_text']
+    facts_text = request.POST['facts_text']
+    print(request.POST)
+    if 'generate_proposal' in request.POST:
+        # update thoughts and facts
+        proposal.thoughts.all().delete()
+        thoughts = thoughts_text.split('\n')
+        for thought_string in thoughts:
+            thought_string = ' '.join(thought_string.split())
+            if thought_string:
+                Thought.objects.create(proposal_id=proposal.id, thought_text=thought_string)
+        proposal.facts.all().delete()
+        facts = facts_text.split('\n')
+        for fact_string in facts:
+            fact_string = ' '.join(fact_string.split())
+            if fact_string:
+                Fact.objects.create(proposal_id=proposal.id, fact_text=fact_string)
 
-def edit_proposal(request, pk):
-    proposal = get_object_or_404(Proposal, id=pk)
-    text = request.POST['proposal_text']
-    proposal.proposal_text = text
+        formatted_prompt = proposal.formatted_prompt()
+        response = 'test' #Prompter.prompt(formatted_prompt)
+        proposal.proposal_text = response
+    elif 'accept' in request.POST:
+        proposal.proposal_text = proposal_text
+        proposal.accepted = True
+        step = Step.objects.create(story_id=step.story_id, prompt=proposal_text, accepted_proposal_id=proposal.id)
+        new_proposal = Proposal.objects.create(step_id=step.id)
+        # copy facts
+        for fact in proposal.facts.all():
+            fact.id = None
+            fact.proposal_id = new_proposal.id
+            fact.save()
+    elif 'new_proposal' in request.POST:
+        new_proposal = Proposal.objects.create(step_id=proposal.step_id)
+        thoughts = thoughts_text.split('\n')
+        for thought_string in thoughts:
+            thought_string = ' '.join(thought_string.split())
+            if thought_string:
+                Thought.objects.create(proposal_id=new_proposal.id, thought_text=thought_string)
+        facts = facts_text.split('\n')
+        for fact_string in facts:
+            fact_string = ' '.join(fact_string.split())
+            if fact_string:
+                Fact.objects.create(proposal_id=new_proposal.id, fact_text=fact_string)
+
     proposal.save()
     return HttpResponseRedirect(proposal.story_url())
 
-def reject_proposal(request, pk):
-    proposal = get_object_or_404(Proposal, id=pk)
-    new_proposal = Proposal.objects.create(step_id=proposal.step_id)
-    for thought in (*proposal.thoughts.all(), *proposal.facts.all()):
-        thought.id = None
-        thought.proposal_id = new_proposal.id
-        thought.save()
-    return HttpResponseRedirect(new_proposal.story_url())
+# def accept_proposal(request, pk):
+#     proposal = get_object_or_404(Proposal, id=pk)
+#     step = proposal.step
+#     proposal.accepted = True
+#     proposal.save
+#     accepted_text = str(proposal)
+#     step = Step.objects.create(story_id=step.story_id, prompt=accepted_text, accepted_proposal_id=proposal.id)
+#     new_proposal = Proposal.objects.create(step_id=step.id)
+#     for fact in proposal.facts.all():
+#         fact.id = None
+#         fact.proposal_id = new_proposal.id
+#         fact.save()
+#     return HttpResponseRedirect(step.story_url())
+
+# def edit_proposal(request, pk):
+#     proposal = get_object_or_404(Proposal, id=pk)
+#     text = request.POST['proposal_text']
+#     proposal.proposal_text = text
+#     proposal.save()
+#     return HttpResponseRedirect(proposal.story_url())
+
+# def reject_proposal(request, pk):
+#     proposal = get_object_or_404(Proposal, id=pk)
+#     new_proposal = Proposal.objects.create(step_id=proposal.step_id)
+#     for thought in (*proposal.thoughts.all(), *proposal.facts.all()):
+#         thought.id = None
+#         thought.proposal_id = new_proposal.id
+#         thought.save()
+#     return HttpResponseRedirect(new_proposal.story_url())
 
 
 

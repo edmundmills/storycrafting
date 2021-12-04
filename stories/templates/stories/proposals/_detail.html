@@ -1,14 +1,13 @@
-<div class='card card-body'>
+<div class='card card-body p-2'>
     {% if proposal.proposal_text %}
-    <p class="story-paragraph">
-        {{proposal}}
-    </p>
-    <div class='d-flex justify-content-center'>
-        <a href="{% url 'stories:accept_proposal' proposal.id %}" class='btn btn-primary mx-1'>Accept</a>
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editProposal">
-            Edit
-        </button>
-        <a href="{% url 'stories:reject_proposal' proposal.id %}" class='btn btn-primary mx-1'>New Proposal</a>
+    <fieldset>
+        {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+        <textarea style="height: 220px;" type="textarea" name="proposal_text"
+            class="form-control">{{ proposal }}</textarea>
+    </fieldset>
+    <div class='d-flex justify-content-center mt-2'>
+        <input type="submit" name="accept" value="Accept" class='btn btn-sm btn-primary mx-1'>
+        <input type="submit" name="new_proposal" value="New Proposal" class='btn btn-sm btn-primary mx-1'>
     </div>
     {% else %}
     <div class="prompt-loading-hidden multi-collapse">
@@ -25,9 +24,10 @@
             <span class="visually-hidden">Loading...</span>
         </div>
     </div>
-    <div class='d-flex justify-content-center my-2'>
-        <input type="submit" value="Generate Proposal" class='btn btn-primary prompt-loading-hidden' id='prompt-button'>
-        <a href="#" class='btn btn-primary disabled prompt-loading'>Generating Proposal...</a>
+    <div class='d-flex justify-content-center mb-2'>
+        <input type="submit" name="generate_proposal" value="Generate Proposal"
+            class='btn btn-sm btn-primary prompt-loading-hidden' id='prompt-button'>
+        <a href="#" class='btn btn-sm btn-primary disabled prompt-loading'>Generating Proposal...</a>
     </div>
     {% endif %}
 </div>
