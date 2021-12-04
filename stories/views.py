@@ -63,11 +63,15 @@ def prompt(request, pk):
     thoughts_text = request.POST['thoughts_text']
     thoughts = thoughts_text.split('\n')
     for thought_string in thoughts:
-        Thought.objects.create(proposal_id=proposal.id, thought_text=thought_string)
+        thought_string = ' '.join(thought_string.split())
+        if thought_string:
+            Thought.objects.create(proposal_id=proposal.id, thought_text=thought_string)
     facts_text = request.POST['facts_text']
     facts = facts_text.split('\n')
     for fact_string in facts:
-        Fact.objects.create(proposal_id=proposal.id, fact_text=fact_string)
+        fact_string = ' '.join(fact_string.split())
+        if fact_string:
+            Fact.objects.create(proposal_id=proposal.id, fact_text=fact_string)
 
     formatted_prompt = proposal.formatted_prompt()
     response = Prompter.prompt(formatted_prompt)

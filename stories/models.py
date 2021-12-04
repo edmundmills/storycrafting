@@ -76,15 +76,16 @@ class Proposal(models.Model):
         story_title = self.step.story.title
         story_text = self.step.prompt
         prompt = ""
-        if len(thoughts) == 0 and not story_text:
-            prompt += f"#{story_title}\n"
+        if len(thoughts) == 0 and len(facts) == 0 and not story_text:
+            prompt += f"Write a story below.\n"
+            prompt += f"{story_title}, a story."
         elif len(thoughts) + len(facts) > 0:
             prompt = "Write a story using this information:\n"
-            prompt += f"The story is titled {story_title}"
+            prompt += f"- The story is titled {story_title}\n"
             prompt += "".join(f"- {fact}\n" for fact in self.facts.all())
             prompt += "".join(f"- {thought}\n" for thought in self.thoughts.all())
-            prompt += '\n'
-        prompt += story_text or 'Response:'
+            prompt += story_text or 'Response:'
+        print(prompt)
         return prompt
 
 
