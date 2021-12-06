@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.urls import reverse
 
@@ -5,8 +6,14 @@ from django.urls import reverse
 
 class Story(models.Model):
     title = models.CharField(max_length=200)
+    author = models.ForeignKey(
+      settings.AUTH_USER_MODEL, # new
+      on_delete=models.CASCADE,
+      related_name='stories'
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
 
     class Meta:
         ordering = ['-updated_at']
@@ -29,7 +36,9 @@ class Story(models.Model):
 class Step(models.Model):
     story = models.ForeignKey(Story, related_name='steps', on_delete=models.CASCADE)
     prompt = models.CharField(max_length=1000, default='')
-    previous_proposal = models.OneToOneField('Proposal', null=True, on_delete=models.SET_NULL, related_name='next_step')
+    previous_proposal = models.OneToOneField('Proposal', null=True, 
+                                             on_delete=models.SET_NULL,
+                                             related_name='next_step')
     generated_context = models.CharField(max_length=1000, default='')
     accepted_context = models.CharField(max_length=1000, default='')
     created_at = models.DateTimeField(auto_now_add=True)
@@ -44,6 +53,9 @@ class Step(models.Model):
     def story_url(self):
         return reverse('stories:write', args=[self.story_id])
 
+    @property
+    def author(self):
+        return self.story.author
 
 class Proposal(models.Model):
     step = models.ForeignKey(Step, related_name='proposals', on_delete=models.CASCADE)

@@ -1,38 +1,48 @@
 from typing import Any, Dict
 
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponse
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.http import HttpResponseForbidden
 from django.http.response import HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.views import generic
 
 from .models import Story, Step, Proposal
+from .forms import StoryForm
 from .services.prompter import Prompter
+
+class AuthorizeAuthorMixin(UserPassesTestMixin):
+    def test_func(self):
+        pk = self.kwargs['pk']
+        story = self.model.objects.get(id=pk)
+        return story.author == self.request.user
 
 class IndexView(LoginRequiredMixin, generic.ListView):
     template_name = 'stories/index.html'
     context_object_name = 'stories'
 
     def get_queryset(self):
-        return Story.objects.all()
+        return Story.objects.filter(author=self.request.user)
 
 class NewView(LoginRequiredMixin, generic.edit.CreateView):
+    form_class = StoryForm
     template_name = 'stories/new.html'
-    model = Story
-    fields = ['title']
 
-    def form_valid(self, *args, **kwargs):
-        response = super().form_valid(*args, **kwargs)
-        step = Step.objects.create(story_id=self.object.id)
-        Proposal.objects.create(step_id=step.id)
-        return response
+    def get_form_kwargs(self):
+        kwargs = super(NewView, self).get_form_kwargs()
+        kwargs.update({'user': self.request.user})
+        return kwargs
 
-class WriteView(LoginRequiredMixin, generic.edit.UpdateView):
+    def form_valid(self, form):
+        story = Story.objects.create(**form.cleaned_data)
+        step = Step.objects.create(story_id=story.id)
+        proposal = Proposal.objects.create(step_id=step.id)
+        return HttpResponseRedirect(proposal.story_url())
+
+class WriteView(AuthorizeAuthorMixin, generic.DetailView):
     template_name = 'stories/write.html'
     model = Story
-    fields = []
 
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
@@ -43,7 +53,7 @@ class WriteView(LoginRequiredMixin, generic.edit.UpdateView):
         })
         return context
 
-class ReadView(LoginRequiredMixin, generic.DetailView):
+class ReadView(AuthorizeAuthorMixin, generic.DetailView):
     template_name = 'stories/read.html'
     model = Story
 
@@ -58,6 +68,8 @@ class ReadView(LoginRequiredMixin, generic.DetailView):
 def update_proposal(request, pk):
     proposal = get_object_or_404(Proposal, id=pk)
     step = proposal.step
+    if request.user != step.author:
+        return HttpResponseForbidden
     if 'proposal_text' in request.POST:
         proposal_text = request.POST['proposal_text'].strip()
     reasoning_text = request.POST['reasoning_text'].strip()
@@ -82,7 +94,7 @@ def update_proposal(request, pk):
     proposal.save()
     return HttpResponseRedirect(proposal.story_url())
 
-class UpdateContextView(LoginRequiredMixin, generic.edit.UpdateView):
+class UpdateContextView(AuthorizeAuthorMixin, generic.edit.UpdateView):
     template_name = 'stories/steps/update_context.html'
     model = Step
     fields = ['accepted_context']

@@ -45,7 +45,7 @@ class Prompter:
             'presence_penalty': 0,
             'logprobs': None,
         }
-        response = "\t  test. sdfg" # Prompter.prompt(params)
+        response = Prompter.prompt(params)
         response = trim_incomplete_sentences(response)
         response = trim_whitespace(response)
         return response
@@ -79,7 +79,7 @@ class Prompter:
             'presence_penalty': 0,
             'logprobs': None,
         }
-        response = 'test' #Prompter.prompt(params)
+        response = Prompter.prompt(params)
         return response
             
 
