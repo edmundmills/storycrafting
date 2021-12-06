@@ -11,14 +11,14 @@ Write - {{story.title}}
         <div class="col d-flex flex-column h-100">
             <h1 class="story-title">{{story.title}}</h1>
             <div class="story-paragraph border-top p-3">
-                {{step.prompt}}
+                <span>{{step.prompt}}</span>
             </div>
         </div>
         <div class="col h-100">
             <div class="card card-body overflow-auto" style="max-height: 100%;">
                 <h3>Previous Context</h3>
                 <ul>
-                    {% for fact in previous_fact_list %}
+                    {% for fact in previous_facts_list %}
                     <li>
                         {{fact}}
                     </li>

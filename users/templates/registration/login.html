@@ -1,0 +1,54 @@
+{% extends "core/base.html" %}
+{% load widget_tweaks %}
+
+{% block title %}
+Sign In
+{% endblock %}
+
+{% block content %}
+<div class="container d-flex justify-content-center">
+    <div class="card card-body p-4 m-5" style="max-width: 400px;">
+
+        {% if form.errors or next %}
+        <div class="mb-2">
+            {% if form.errors %}
+            <div class='list-group-item list-group-item-warning border border-warning mb-2'>
+                Your username and password didn't match. Please try again.
+            </div>
+            {% endif %}
+
+            {% if next %}
+            <div class='list-group-item list-group-item-warning border border-warning mb-2'>
+                {% if user.is_authenticated %}
+                Your account doesn't have access to this page. To proceed,
+                please login with an account that has access.
+                {% else %}
+                Please login to see this page.
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <form method="post" action="{% url 'login' %}">
+            {% csrf_token %}
+            <div class="mb-3">
+                <div class="mb-2">
+                    {% render_field form.username class="form-control" placeholder="Email" %}
+                </div>
+                <div class="mb-2">
+                    {% render_field form.password class="form-control" placeholder="Password" %}
+                </div>
+            </div>
+            <div class="d-flex mb-3">
+                <input type="submit" value="Sign In" class="btn btn-primary flex-grow-1">
+            </div>
+            <!-- <div>
+                <a href="{% url 'password_reset' %}">Reset Password</a>
+            </div> -->
+            <input type="hidden" name="next" value="{{ next }}">
+        </form>
+    </div>
+</div>
+
+{% endblock %}

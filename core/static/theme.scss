@@ -1,0 +1,36 @@
+$primary: #4D194D;
+$dark: #272640;
+$secondary: #006466;
+$light: #F3F3F7;
+$gray: #8D8D9C;
+$danger: #D81159;
+$warning: #EF8354;
+$success: #7AACAF; 
+$success-2: #A9FFF7; 
+
+$card-bg: $light;
+$card-border-color: $gray;
+$border-radius:   0rem;
+$btn-border-radius: 3rem;
+$btn-border-radius-sm: 3rem;
+$list-group-item-padding-y: .1rem;
+$navbar-padding-y: .1rem;
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant&family=Cormorant+Garamond:ital@1&display=swap');
+$font-family-serif: 'Cormorant';
+$font-family-title: 'Cormorant Garamond';
+
+@import './bootstrap/scss/bootstrap';
+
+$thought-bubble-border-color: $gray;
+@import '../../stories/static/stories';
+
+h1 {
+    color: $dark;
+}
+
+@media (min-width: 1200px){
+  .container{
+    max-width: 940px !important;
+  }
+}

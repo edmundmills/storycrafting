@@ -11,12 +11,16 @@
             class="form-control">{{ proposal }}</textarea>
     </fieldset>
     <div class='d-flex justify-content-center mt-2'>
-        <input type="submit" name="accept" value="Accept" class='btn btn-sm btn-primary mx-1 prompt-loading-hidden'
-            id="accept-proposal-button">
-        <a href="#" class='btn btn-sm btn-primary disabled mx-1 prompt-loading'>Accepting...</a>
-        <input type="submit" name="new_proposal" value="New Proposal"
-            class='btn btn-sm btn-primary mx-1 prompt-loading-hidden'>
-        <a href="#" class='btn btn-sm btn-primary disabled mx-1 prompt-loading'>New Proposal</a>
+        <div>
+            <input type="submit" name="accept" value="Accept" class='btn btn-sm btn-primary mx-1 prompt-loading-hidden'
+                id="accept-proposal-button">
+            <a href="#" class='btn btn-sm btn-primary disabled mx-1 prompt-loading'>Accepting...</a>
+        </div>
+        <div>
+            <input type="submit" name="new_proposal" value="New Proposal"
+                class='btn btn-sm btn-primary mx-1 prompt-loading-hidden'>
+            <a href="#" class='btn btn-sm btn-primary disabled mx-1 prompt-loading'>New Proposal</a>
+        </div>
     </div>
     {% else %}
     <div class="prompt-loading-hidden">

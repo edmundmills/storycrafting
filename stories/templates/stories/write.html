@@ -16,7 +16,7 @@ Write - {{story.title}}
             {% include 'stories/proposals/_detail.html' with proposal=proposal %}
         </div>
         <div class="col h-100">
-            {% include 'stories/thoughts/_editor.html' with thought_list=thought_list fact_list=fact_list %}
+            {% include 'stories/thoughts/_editor.html' with proposal=proposal %}
         </div>
     </div>
 </form>
